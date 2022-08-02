@@ -11,13 +11,14 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
-
 """
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
+from searchAgents import SearchAgent
 import util
+import queue 
 
 class SearchProblem:
     """
@@ -82,11 +83,36 @@ def depthFirstSearch(problem: SearchProblem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
     """
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    # print("Start:", problem.getStartState())
+    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Queue()
+    general_search(problem, frontier)
+        
+
+    # util.raiseNotDefined()
+
+def general_search(problem, frontier):
+    visited=set()
+    frontier.push((problem.getStartState(), [], 0))
+
+    goal_found = False
+
+    while goal_found:
+        node = problem.getSuccessors(problem.getStartState())
+        node, path, cost = frontier.pop()
+
+        if problem.isGoalState(node):
+            goal_found = True
+
+            return path
+        else: 
+            visited.add(node)
+        for child, paths, costs in problem.getSuccessors(node):
+            if child not in visited:
+                frontier.push((child, path + [paths], costs))
+        
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
